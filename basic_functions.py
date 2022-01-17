@@ -74,11 +74,3 @@ def simple_interest(amount, rate, time, **kwargs):
     elif eb:
         si = amount*(1+rate*time)
     return si
-
-
-'''
-todo:
--what to do with the printing info - check how this is done in other python packages
--consider changing the number of decimals to function argument (see other libraries for examples)
-
-'''
