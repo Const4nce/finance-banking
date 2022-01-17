@@ -51,8 +51,13 @@ wants $100 today, assuming that the individual can earn 5% otherwise in one year
 '''
 
 
-def future_value_factor(rate, periods):
-    fvf = (1+rate)**periods
+def future_value_factor(rate, periods, **kwargs):
+    factor = kwargs.get('factor', True)
+    fv = kwargs.get('future_value', None)
+    if factor:
+        fvf = (1 + rate) ** periods
+    if fv:
+        fvf = (1 + rate) ** periods * fv
     return round(fvf, 2)
 
 
