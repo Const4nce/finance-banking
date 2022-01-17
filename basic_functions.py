@@ -44,6 +44,13 @@ def future_value(cashflow_period_0, rate, periods, **kwargs):
 
 
 # FUTURE VALUE FACTOR
+'''
+calculates the future value of an amount per dollar of its present value. 
+An amount of $105 to be received a year from now may be okay if the individual 
+wants $100 today, assuming that the individual can earn 5% otherwise in one year.
+'''
+
+
 def future_value_factor(rate, periods):
     fvf = (1+rate)**periods
     return round(fvf, 2)
