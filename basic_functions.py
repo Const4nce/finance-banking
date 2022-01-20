@@ -1,5 +1,5 @@
 import numpy as np
-
+import math
 # PRESENT VALUE
 '''
 calculates the present day value of an amount that is received at a future date;
@@ -86,3 +86,46 @@ def simple_interest(amount, rate, time, **kwargs):
     elif eb:
         si = amount*(1+rate*time)
     return si
+
+
+# COMPOUND INTEREST
+'''
+calculates the amount of interest earned on an account or investment where the amount earned is reinvested.
+By reinvesting the amount earned, an investment will earn money based on the effect of compounding.
+Compounding is the concept that any amount earned on an investment can be reinvested to create additional 
+earnings that would not be realized based on the original principal, or original balance, alone. 
+The interest on the original balance alone would be called simple interest. 
+The additional earnings plus simple interest would equal the total amount earned from compound interest.
+The rate per period (r) and number of periods (n) in the compound interest formula must match how often 
+the account is compounded. For example, if an account is compounded monthly, then one month would be one period.
+Suppose an account with an original balance of $1000 is earning 12% per year and is compounded monthly.
+Due to being compounded monthly, the number of periods for one year would be 12 and the rate would be 1% (per month).
+'''
+
+def compound_interest(amount, rate, periods,**kwargs):
+    apy = kwargs.get('APY', False)
+    ending_balance = kwargs.get('ending_balance', False)
+    if not apy:
+        ci = amount*((1+rate)**periods-1)
+    elif apy:
+        #when apy is true the function returns the effective rate
+        ci = (1+rate)**periods-1
+    elif ending_balance:
+        ci = amount*((1+rate)**periods)
+    return ci
+
+
+# CONTINUOUS COMPOUND INTEREST
+'''
+interest earned on an account that is constantly compounded, essentially leading to an infinite amount of 
+compounding periods.The effect of compounding is earning interest on an investment, or at times paying interest 
+on a debt, that is reinvested to earn additional monies that would not have been gained based on
+the initial (principal)balance alone. By earning interest on prior interest, one can earn at an exponential rate.
+Instead of compounding interest on an monthly, quarterly, or annual basis, continuous compounding 
+will effectively reinvest gains perpetually.
+'''
+def continuous_compound_interest(amount, rate, time):
+    cci=(amount * (pow((1 + rate/100), time)) ) - amount
+    return round(cci,2)
+
+# TODO: add result as rate argument
