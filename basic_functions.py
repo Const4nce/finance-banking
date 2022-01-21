@@ -1,5 +1,5 @@
-import numpy as np
 import math
+
 # PRESENT VALUE
 '''
 calculates the present day value of an amount that is received at a future date;
@@ -45,7 +45,7 @@ def future_value(cashflow_period_0, rate, periods, **kwargs):
 
 # FUTURE VALUE FACTOR
 '''
-calculates the future value of an amount per dollar of its present value. 
+calculates the future value of an amount per unit of its present value. 
 An amount of $105 to be received a year from now may be okay if the individual 
 wants $100 today, assuming that the individual can earn 5% otherwise in one year.
 '''
@@ -62,70 +62,58 @@ def future_value_factor(rate, periods, **kwargs):
 
 
 # NUMBER OF PERIODS
-def number_of_periods(future_value, present_value, rate):
-    n_periods = (np.log(future_value/present_value))/(np.log(1+rate))
+def number_of_periods(future_value, present_value, rate, **kwargs):
+    annuity = kwargs.get('annuity', False)
+    amount = kwargs.get('amount', None)
+    if annuity:
+        if amount == None:
+            raise ValueError("amount is required for number of periods annuity")
+        n_periods = math.log((1+(future_value*rate)/amount)/math.log(1+rate))
+    else:
+        n_periods = (math.log(future_value/present_value))/(math.log(1+rate))
     return round(n_periods, 2)
 
 
-# SIMPLE INTEREST
+# NUMBER OF PERIODS - ANNUITY
+# DOUBLING TIME
 '''
-calculates the interest accrued on a loan or savings account that has simple interest. 
-An example of a simple interest calculation would be a 3 year saving account at a 10% rate
- with an original balance of $1000. By inputting these variables into the formula, 
- $1000 times 10% times 3 years would be $300.
- Simple interest is money earned or paid that does not have compounding. 
- Compounding is the effect of earning interest on the interest that was previously earned.
- With this formula it is assumed that no amount was earned on the interest that was earned in prior years.
-'''
-
-
-def simple_interest(amount, rate, time, **kwargs):
-    eb = kwargs.get('ending_balance', False)
-    if not eb:
-        si = amount*rate*time
-    elif eb:
-        si = amount*(1+rate*time)
-    return si
-
-
-# COMPOUND INTEREST
-'''
-calculates the amount of interest earned on an account or investment where the amount earned is reinvested.
-By reinvesting the amount earned, an investment will earn money based on the effect of compounding.
-Compounding is the concept that any amount earned on an investment can be reinvested to create additional 
-earnings that would not be realized based on the original principal, or original balance, alone. 
-The interest on the original balance alone would be called simple interest. 
-The additional earnings plus simple interest would equal the total amount earned from compound interest.
-The rate per period (r) and number of periods (n) in the compound interest formula must match how often 
-the account is compounded. For example, if an account is compounded monthly, then one month would be one period.
-Suppose an account with an original balance of $1000 is earning 12% per year and is compounded monthly.
-Due to being compounded monthly, the number of periods for one year would be 12 and the rate would be 1% (per month).
+calculates the length of time required to double an investment or money in an account with interest.
+The rate in the doubling time formula represents the rate per period. 
+To calculate the amount of time to double  money in an account that is compounded monthly, 
+then the rate needs to express the monthly rate and not the annual rate.
+The monthly rate can be found by dividing the annual rate by 12. With this situation, 
+the doubling time formula will give the number of months that it takes to double money and not years.
+The effective annual rate or annual percentage yield can also be used as the rate in this formula. 
 '''
 
-def compound_interest(amount, rate, periods,**kwargs):
-    apy = kwargs.get('APY', False)
-    ending_balance = kwargs.get('ending_balance', False)
-    if not apy:
-        ci = amount*((1+rate)**periods-1)
-    elif apy:
-        #when apy is true the function returns the effective rate
-        ci = (1+rate)**periods-1
-    elif ending_balance:
-        ci = amount*((1+rate)**periods)
-    return ci
+def doubling_time(rate):
+    '''
+    :param rate: rate per period
+    :return: number of years/months it takes to double money
+    '''
+    time = math.log(2)/math.log(1+rate)
+    return time
 
 
-# CONTINUOUS COMPOUND INTEREST
+# Rule of 72
 '''
-interest earned on an account that is constantly compounded, essentially leading to an infinite amount of 
-compounding periods.The effect of compounding is earning interest on an investment, or at times paying interest 
-on a debt, that is reinvested to earn additional monies that would not have been gained based on
-the initial (principal)balance alone. By earning interest on prior interest, one can earn at an exponential rate.
-Instead of compounding interest on an monthly, quarterly, or annual basis, continuous compounding 
-will effectively reinvest gains perpetually.
+Simple formula to estimate the length of time required to double an investment.
+The rule of 72 is primarily used in off the cuff situations where an individual needs to make 
+a quick calculation instead of working out the exact time it takes to double an investment. 
+The rule of 72 can also be used to estimate the rate needed to double an investment within a specific time period.
 '''
-def continuous_compound_interest(amount, rate, time):
-    cci=(amount * (pow((1 + rate/100), time)) ) - amount
-    return round(cci,2)
+def rule_72_time(rate):
+    '''
+    :param rate: rate expressed as a whole number
+    :return: length of time required to double an investment
+    '''
+    time = 72/rate
+    return time
 
-# TODO: add result as rate argument
+def rule_72_rate(time):
+    '''
+    :param time: length of time available to double the investment
+    :return: rate needed to double an investment within given time
+    '''
+    rate=72/time
+    return rate
