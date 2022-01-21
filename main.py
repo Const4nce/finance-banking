@@ -1,8 +1,8 @@
-import basic_functions
+import basic_functions, interest_functions, loan_functions
 
-# Press the green button in the gutter to run the script.
+# TODO: set up testing
+
 if __name__ == '__main__':
-    # value = future_value(1000, 0.005, 12, present_value = 1061.68)
-    value = basic_functions.continuous_compound_interest(10000, 10.25, 5, ending_balance=False)
-
+    # value = basic_functions.future_value(1000, 0.005, 12, present_value = 1061.68)
+    value = loan_functions.standard_loan_payment(76008.88, .005, 60)
     print(value)
